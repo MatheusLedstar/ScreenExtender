@@ -1,10 +1,23 @@
 import SwiftUI
 import AppKit
+import Foundation
+
+// Check for --test flag before SwiftUI launches
+// Must be a top-level check since @main takes over
+private let isTestMode = CommandLine.arguments.contains("--test")
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApp.setActivationPolicy(.regular)
-        NSApp.activate(ignoringOtherApps: true)
+        if isTestMode {
+            NSApp.setActivationPolicy(.prohibited)
+            Task {
+                await VirtualDisplayTest.run()
+                exit(0)
+            }
+        } else {
+            NSApp.setActivationPolicy(.regular)
+            NSApp.activate(ignoringOtherApps: true)
+        }
     }
 }
 

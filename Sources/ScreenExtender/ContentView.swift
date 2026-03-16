@@ -181,6 +181,10 @@ struct ContentView: View {
         .frame(minHeight: 420)
         .task {
             await state.loadDisplays()
+            // Auto-start if launched with --auto-start
+            if CommandLine.arguments.contains("--auto-start") && !state.isRunning {
+                await state.start()
+            }
         }
     }
 }
